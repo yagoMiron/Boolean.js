@@ -39,8 +39,7 @@ function resolveExpressao(input) {
                     var entradasD = [...entradasC, index];
                     expressaoD = expressaoD.replace(/D'/g, Number(!index));
                     expressaoD = expressaoD.replace(/D/g, Number(index));
-                    expressaoD = resolveParenteses(expressaoD);
-                    var resultExpressao = calculaResultado(expressaoD);
+                    var resultExpressao = resolveParenteses(expressaoD);
                     imprimeTabela(entradasD, resultExpressao);
                 }
             }
@@ -219,7 +218,7 @@ function resolveParenteses(expressaoString) {
 
     } else {
         let stringExpressao = arrayString.join('');
-        console.log(stringExpressao);
+        stringExpressao = calculaResultado(stringExpressao);
         return stringExpressao;
     }
 }
