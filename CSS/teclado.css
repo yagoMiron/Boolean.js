@@ -1,0 +1,135 @@
+.barra{
+    background-color: var(--cor-secundaria);
+    color: var(--cor-terciaria);
+    font-size: 22px;
+    font-weight: 700;
+    padding: 15px 12px;
+    border-radius: 10px 10px 0px 0px;
+    display: flex;
+    justify-content: space-between;
+}
+.botaoFechar{
+    background-color: var(--texto-detacado);
+    color: var(--cor-secundaria);
+    font-size: 15px;
+    font-weight: 700;
+    border: 0px;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.input{
+    padding: 5px 12px;
+    width: Calc(100% - 24px);
+    border: 0px;
+    font-size: 22px;
+    text-align: end;
+    display: flex;
+}
+
+.teclado{
+    display: grid;
+    grid-template-areas:
+        "apagar   abrirP   fecharP   not      um"
+        "A        B        C         D        zero0"
+        "notA     notB     notC      notD     igual"
+        "OR       AND      XOR       XNOR     igual"
+        ;
+    grid-template-rows: 50px 50px 50px 50px;
+    gap: 5px 5px;
+    margin: 10px 10px;
+}
+.botao{
+    border-radius: 2px;
+    border: 0px;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--cor-texto);
+    background-color: var(--cor-terciaria);
+}
+.botao:hover{
+    cursor: pointer;
+    background-color: #95e9c5;
+}
+.numero{
+    background-color: var(--quinta-cor);
+}
+.numero:hover{
+    background-color: #59bd91;;
+}
+
+#apagar{
+    grid-area: apagar;
+    font-size: 25px;
+    background-color: rgb(248, 83, 83);
+    padding-bottom: 7px;
+}
+#apagar:hover{
+    background-color: rgb(241, 135, 135);
+}
+#abrirP{
+    grid-area: abrirP;
+}
+#fecharP{
+    grid-area: fecharP;
+}
+#not{
+    grid-area: not;
+}
+#um{
+    grid-area: um;
+}
+
+/* Segunda Coluna*/
+#A{
+    grid-area: A;
+}
+#B{
+    grid-area: B;
+}
+#C{
+    grid-area: C;
+}
+#D{
+    grid-area: D;
+}
+#zero{
+    grid-area: zero0;
+}
+
+/* Terceira Coluna*/
+#notA{
+    grid-area: notA;
+}
+#notB{
+    grid-area: notB;
+}
+#notC{
+    grid-area: notC;
+}
+#notD{
+    grid-area: notD;
+}
+/* Quarta Coluna*/
+#OR{
+    grid-area: OR;
+    border-bottom-left-radius: 9px;
+}
+#AND{
+    grid-area: AND;
+}
+#XOR{
+    grid-area: XOR;
+}
+#XNOR{
+    grid-area: XNOR;
+}
+
+
+#igual{
+    grid-area: igual;
+    background-color: rgb(100, 252, 133);
+    border-bottom-right-radius: 9px;
+}
+#igual:hover{
+    background-color: rgb(144, 250, 167);
+}
