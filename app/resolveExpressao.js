@@ -155,6 +155,16 @@ function procuraParenteses(expressao) {
             if (!isNaN(Number(resultInterno)) || resultInterno.length == 2 && resultInterno[1] == "'") {
                 return String(resultInterno)
             }
+
+            if(typeof resultInterno === 'string' || resultInterno instanceof String){
+                let arrayMath = resultInterno.split('');
+                const indiceFechaParenteses = arrayMath.findIndex((element) => element == ')')
+                let stringMath = (arrayMath.slice(0, indiceFechaParenteses)).join("");
+                let segundaParte = (arrayMath.slice(indiceFechaParenteses+1)).join("");
+                let result = calculaResultado(stringMath)
+                resultInterno = result+segundaParte;
+            }
+
             arrayString.splice((indiceAbreParenteses), arrayString.length, ...resultInterno);
             resultInterno = arrayString.join("");
             return resultInterno
