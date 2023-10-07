@@ -1,20 +1,3 @@
-/*
-const input = "((A*B)+(A*B))'";
-
-console.log(input)
-
-console.log("---------------------")
-console.log("| A | B | C | D | X |")
-console.log("---------------------")
-
-resolveExpressao();
-console.log("---------------------")
-*/
-
-
-
-
-
 function resolveExpressao(input) {
     for (let index = 0; index < 2; index++) {
         //var expressao = "A+B'*A+B+A'*A"
@@ -40,7 +23,6 @@ function resolveExpressao(input) {
                     expressaoD = expressaoD.replace(/D'/g, Number(!index));
                     expressaoD = expressaoD.replace(/D/g, Number(index));
                     var resultExpressao = resolveParenteses(expressaoD);
-                    resultExpressao = calculaResultado(resultExpressao);
                     imprimeTabela(entradasD, resultExpressao);
                 }
             }
@@ -50,7 +32,7 @@ function resolveExpressao(input) {
 }
 
 function calculaResultado(expressao) {
-    // 1+0*1+1+0*1
+    // 1+0*1+1+0*1]
     arrayOr = expressao.split('+');
     arrayOr = arrayOr.map((element) => {
         if (Number(element)) {
@@ -79,7 +61,7 @@ function calculaResultado(expressao) {
             const result = multiplicaElementos(arrayAnd);
             return result;
         }
-    })
+    });
     let arrayResultadoOr = somarElementos(arrayOr);
     if (Number(arrayResultadoOr) === NaN) {
         console.log("ERROR")
@@ -141,94 +123,48 @@ function resolveXNOR(arrayXNOR) {
 }
 
 
-function resolveParenteses(expressaoString) {
-    expressaoString = expressaoString.replace(/0'/g, 1);
-    expressaoString = expressaoString.replace(/1'/g, 0);
-    expressaoString = expressaoString.replace(/ /g, "");
-    let direcao;
-    let arrayString = expressaoString.split('');
-    //console.log("ArrayString: " +arrayString)
-    //console.log("expressao: " +expressaoString)
-    // ()()' (())'
-    let arrayInvertido = arrayString.toReversed();
+function resolveParenteses(expressao) {
+    expressao = expressao + ")";
+    expressao = expressao.replace(/''/g, "");
+    expressao = expressao.replace(/0'/g, 1);
+    expressao = expressao.replace(/1'/g, 0);
 
-    const indexInvertido = arrayInvertido.findIndex((element) => element == "'");
-    const indexApostrofo = arrayString.length -indexInvertido -1;
-    if (indexInvertido != -1) {
-        let arrayCortado = arrayString.slice(0, indexApostrofo);
-        arrayCortado.reverse();
-        let contador = 0;
-        const indexDeCorte = arrayCortado.findIndex((element) => {
-            if (element == ')') {
-                contador++
-                return false;
-            }
-            if (element == '(') {
-                contador--
-                if (contador == 0) {
-                    return true
-                }
-                return false;
-            } else {
-                return false;
-            }
-        })
-        arrayCortado = arrayCortado.slice(1, indexDeCorte);
-        arrayCortado.reverse();
-        let stringCortada = arrayCortado.join('');
-        var resultExpressaoInterna;
-        if (arrayCortado.includes('(')) {
-            resultExpressaoInterna = resolveParenteses(stringCortada);
-            while (isNaN(resultExpressaoInterna)) {
-                resultExpressaoInterna = calculaResultado(resultExpressaoInterna);
-            }
-
-            resultExpressaoInterna = String(resultExpressaoInterna);
-        } else {
-            resultExpressaoInterna = calculaResultado(stringCortada);
-            resultExpressaoInterna = String(resultExpressaoInterna)
+    while (expressao.includes(")")) {
+        expressao = procuraParenteses(expressao)
+        if (typeof expressao === "object") {
+            expressao = expressao.join("")
         }
-        resultExpressaoInterna = resultExpressaoInterna.replace(/0/g, "0'");
-        resultExpressaoInterna = resultExpressaoInterna.replace(/1/g, "1'");
-        resultExpressaoInterna = resultExpressaoInterna.replace(/0'/g, 1);
-        resultExpressaoInterna = resultExpressaoInterna.replace(/1'/g, 0);
-        arrayString.splice((arrayString.length - indexDeCorte - 2), (indexApostrofo + 1), resultExpressaoInterna);
-
+        expressao = expressao.replace(/''/g, "");
+        expressao = expressao.replace(/0'/g, 1);
+        expressao = expressao.replace(/1'/g, 0);
     }
+    expressao = calculaResultado(expressao)
+    return expressao;
+}
 
-    const indexParenteses = arrayString.findIndex((element) => {
+function procuraParenteses(expressao) {
+    let arrayString = expressao.split('');
+    for (index = 0; index < arrayString.length; index++) {
+        const element = arrayString[index];
         if (element == '(') {
-            direcao = 'direita'
-            return true
-        } else if (element == ')') {
-            direcao = 'esquerda'
-            return true;
-        } else {
-            return false;
-        }
-    })
-    if (direcao == 'direita') {
-        const arrayCortado = arrayString.slice(indexParenteses + 1);
-        let stringExpressao = arrayCortado.join('');
-        const resultExpressaoInterna = resolveParenteses(stringExpressao);
-        arrayString.splice(indexParenteses, arrayString.length, resultExpressaoInterna);
-        stringExpressao = arrayString.join('');
-        return stringExpressao;
+            const arrayInterno = arrayString.slice(index + 1, arrayString.length);
+            const stringInterna = arrayInterno.join("");
+            let resultInterno = procuraParenteses(stringInterna);
+            const indiceAbreParenteses = arrayString.findIndex((element) => element == '(')
 
-    } else if (direcao == 'esquerda') {
-        let arrayCortado = arrayString.slice(0, indexParenteses);
-        let stringExpressao = arrayCortado.join('');
-        const resultExpressaoInterna = calculaResultado(stringExpressao);
-        arrayString.splice(0, (indexParenteses + 1), resultExpressaoInterna);
-        stringExpressao = arrayString.join('');
-        stringExpressao = resolveParenteses(stringExpressao);
-        return stringExpressao;
-
-    } else {
-        let stringExpressao = arrayString.join('');
-        while (isNaN(stringExpressao)) {
-            stringExpressao = calculaResultado(stringExpressao);
+            if (!isNaN(Number(resultInterno)) || resultInterno.length == 2 && resultInterno[1] == "'") {
+                return String(resultInterno)
+            }
+            arrayString.splice((indiceAbreParenteses), arrayString.length, ...resultInterno);
+            resultInterno = arrayString.join("");
+            return resultInterno
         }
-        return stringExpressao;
+        if (element == ')') {
+            const arrayInterno = arrayString.slice(0, index);
+            const stringInterna = arrayInterno.join("");
+            let resultInterno = calculaResultado(stringInterna)
+            arrayString.splice(0, (index + 1), resultInterno);
+            return arrayString;
+        }
     }
 }
