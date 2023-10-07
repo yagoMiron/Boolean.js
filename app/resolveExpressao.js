@@ -40,6 +40,7 @@ function resolveExpressao(input) {
                     expressaoD = expressaoD.replace(/D'/g, Number(!index));
                     expressaoD = expressaoD.replace(/D/g, Number(index));
                     var resultExpressao = resolveParenteses(expressaoD);
+                    resultExpressao = calculaResultado(resultExpressao);
                     imprimeTabela(entradasD, resultExpressao);
                 }
             }
@@ -52,17 +53,17 @@ function calculaResultado(expressao) {
     // 1+0*1+1+0*1
     arrayOr = expressao.split('+');
     arrayOr = arrayOr.map((element) => {
-        if (element == Number) {
+        if (Number(element)) {
             return element;
         } else {
             let arrayAnd = element.split('*');
             arrayAnd = arrayAnd.map((element) => {
-                if (element == Number) {
+                if (Number(element)) {
                     return element;
                 } else {
                     let arrayXOR = element.split('⊕');
                     arrayXOR = arrayXOR.map((element) => {
-                        if (element == Number) {
+                        if (Number(element)) {
                             return element;
                         } else {
                             let arrayXNOR = element.split('⊙');
@@ -80,6 +81,9 @@ function calculaResultado(expressao) {
         }
     })
     let arrayResultadoOr = somarElementos(arrayOr);
+    if (Number(arrayResultadoOr) === NaN) {
+        console.log("ERROR")
+    }
     let resultado = Boolean(arrayResultadoOr)
     return Number(resultado);
 }
@@ -100,52 +104,57 @@ function multiplicaElementos(arrayMult) {
     return result;
 }
 function resolveXOR(arrayXOR) {
-    if (arrayXOR.length>1) {
-        
-    
-    let contador = 0;
-    arrayXOR.forEach(element => {
-        if (element == 1) {
-            contador++
+    if (arrayXOR.length > 1) {
+
+
+        let contador = 0;
+        arrayXOR.forEach(element => {
+            if (element == 1) {
+                contador++
+            }
+        });
+        if (contador % 2 == 0) {
+            return 0;
+        } else {
+            return 1;
         }
-    });
-    if (contador % 2 == 0) {
-        return 0;
     } else {
-        return 1;
+        return Number(arrayXOR)
     }
-}else{
-    return Number(arrayXOR)
-}
 }
 function resolveXNOR(arrayXNOR) {
-    if (arrayXNOR.length>1) {
-    let contador = 0;
-    arrayXNOR.forEach(element => {
-        if (element == 1) {
-            contador++
+    if (arrayXNOR.length > 1) {
+        let contador = 0;
+        arrayXNOR.forEach(element => {
+            if (element == 1) {
+                contador++
+            }
+        });
+        if (contador % 2 == 0) {
+            return 1;
+        } else {
+            return 0;
         }
-    });
-    if (contador % 2 == 0) {
-        return 1;
     } else {
-        return 0;
+        return Number(arrayXNOR)
     }
-}else{
-    return Number(arrayXNOR)
-}
 }
 
 
 function resolveParenteses(expressaoString) {
     expressaoString = expressaoString.replace(/0'/g, 1);
     expressaoString = expressaoString.replace(/1'/g, 0);
+    expressaoString = expressaoString.replace(/ /g, "");
     let direcao;
     let arrayString = expressaoString.split('');
-
+    //console.log("ArrayString: " +arrayString)
+    //console.log("expressao: " +expressaoString)
     // ()()' (())'
-    const indexApostrofo = arrayString.findIndex((element) => element == "'");
-    if (indexApostrofo != -1) {
+    let arrayInvertido = arrayString.toReversed();
+
+    const indexInvertido = arrayInvertido.findIndex((element) => element == "'");
+    const indexApostrofo = arrayString.length -indexInvertido -1;
+    if (indexInvertido != -1) {
         let arrayCortado = arrayString.slice(0, indexApostrofo);
         arrayCortado.reverse();
         let contador = 0;
@@ -168,24 +177,23 @@ function resolveParenteses(expressaoString) {
         arrayCortado.reverse();
         let stringCortada = arrayCortado.join('');
         var resultExpressaoInterna;
-        if(arrayCortado.includes('(')){
+        if (arrayCortado.includes('(')) {
             resultExpressaoInterna = resolveParenteses(stringCortada);
-        }else{
-            console.log("StringCortada = "+stringCortada)
+            while (isNaN(resultExpressaoInterna)) {
+                resultExpressaoInterna = calculaResultado(resultExpressaoInterna);
+            }
+
+            resultExpressaoInterna = String(resultExpressaoInterna);
+        } else {
             resultExpressaoInterna = calculaResultado(stringCortada);
             resultExpressaoInterna = String(resultExpressaoInterna)
         }
-        console.log(typeof(resultExpressaoInterna))
         resultExpressaoInterna = resultExpressaoInterna.replace(/0/g, "0'");
         resultExpressaoInterna = resultExpressaoInterna.replace(/1/g, "1'");
         resultExpressaoInterna = resultExpressaoInterna.replace(/0'/g, 1);
         resultExpressaoInterna = resultExpressaoInterna.replace(/1'/g, 0);
-        console.log("array = "+ arrayString)
-        console.log("splice1 = "+(arrayString.length - indexDeCorte - 2))
-        console.log("splice2 = "+(indexApostrofo + 1))
-        console.log("entrada = "+resultExpressaoInterna)
         arrayString.splice((arrayString.length - indexDeCorte - 2), (indexApostrofo + 1), resultExpressaoInterna);
-        console.log(arrayString)
+
     }
 
     const indexParenteses = arrayString.findIndex((element) => {
@@ -218,7 +226,9 @@ function resolveParenteses(expressaoString) {
 
     } else {
         let stringExpressao = arrayString.join('');
-        stringExpressao = calculaResultado(stringExpressao);
+        while (isNaN(stringExpressao)) {
+            stringExpressao = calculaResultado(stringExpressao);
+        }
         return stringExpressao;
     }
 }
